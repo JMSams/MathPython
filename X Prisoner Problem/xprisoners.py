@@ -25,46 +25,58 @@ def prisoners(count):
     for i in range(prisonerCount):
         drawers.append(i)
     
-    results = 0
-    for sim in range(simCount):
-        currentSim = sim
+    with open(path.join(sys.path[0], 'results for {} prisoners.csv'.format(prisonerCount)), 'w') as f:
+        f.write('sim,')
+        f.write(','.join(map(str, drawers)))
+        f.write(',win\n')
 
-        #shuffle drawers
-        random.shuffle(drawers)
+        results = 0
+        for sim in range(simCount):
+            currentSim = sim
 
-        #check all prisoners
-        successes = 0
-        for prisoner in range(prisonerCount):
-            currentPrisoner = prisoner
-            #for half the drawers...
-            d = prisoner
-            for i in range(round(prisonerCount/2)):
-                if drawers[d] == prisoner:
-                    successes += 1
-                    break
-                else:
-                    d = drawers[d]
-        
-        if successes == prisonerCount:
-            results += 1
+            f.write(str(sim) + ',')
+
+            #shuffle drawers
+            random.shuffle(drawers)
+            
+            f.write(','.join(map(str, drawers)))
+
+            #check all prisoners
+            successes = 0
+            for prisoner in range(prisonerCount):
+                currentPrisoner = prisoner
+                #for half the drawers...
+                d = prisoner
+                for i in range(round(prisonerCount/2)):
+                    if drawers[d] == prisoner:
+                        successes += 1
+                        break
+                    else:
+                        d = drawers[d]
+            
+            if successes == prisonerCount:
+                f.write(',yes\n')
+                results += 1
+            else:
+                f.write(',no\n')
     
     global done
     done = True
 
-    with open(path.join(sys.path[0], 'result.txt'), 'a') as f:
-        f.write("Prisoner Count: {}\n".format(prisonerCount))
-        f.write("Simulation Count: {}\n".format(simCount))
-        f.write("Success Rate: {}/{} ({}%)\n".format(results, simCount, Decimal(Decimal(results)/Decimal(simCount))*Decimal(100)))
-        f.write("-------------\n")
+    #with open(path.join(sys.path[0], 'results for {} prisoners.csv'.format(prisonerCount)), 'w') as f:
+    #    f.write("Prisoner Count: {}\n".format(prisonerCount))
+    #    f.write("Simulation Count: {}\n".format(simCount))
+    #    f.write("Success Rate: {}/{} ({}%)\n".format(results, simCount, Decimal(Decimal(results)/Decimal(simCount))*Decimal(100)))
+    #    f.write("-------------\n")
 
 def animate():
     for c in itertools.cycle(['\\', '|', '/', '-']):
         if done:
             print("\rSimulations for {} prisoners complete!       ".format(prisonerCount))
             break
-        sys.stdout.write("\rWorking ({3} Prisoners) (Sim: {1}/{2}) {0}".format(c, currentSim, simCount, prisonerCount))
+        print("\rWorking ({3} Prisoners) (Sim: {1}/{2}) {0}".format(c, currentSim, simCount, prisonerCount), end="")
         sys.stdout.flush()
-        time.sleep(0.15)
+        time.sleep(0.2)
 
 def StartAnimator():
     t = threading.Thread(target=animate)
@@ -80,7 +92,16 @@ StartAnimator()
 prisoners(10)
 
 StartAnimator()
+prisoners(50)
+
+StartAnimator()
 prisoners(100)
 
 StartAnimator()
+prisoners(500)
+
+StartAnimator()
 prisoners(1000)
+
+StartAnimator()
+prisoners(10000)
