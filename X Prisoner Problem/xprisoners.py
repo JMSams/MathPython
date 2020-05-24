@@ -4,8 +4,6 @@ import threading
 import time
 import sys
 
-simCount = 1000000
-
 def prisoners(count):
     drawers = []
     for i in range(count):
@@ -29,19 +27,23 @@ def prisoners(count):
     done = True
     print("\rPrisoner Count: {}".format(count))
     print("Simulation Count: {}".format(simCount))
-    print("Success Rate: {}".format(results / simCount))
+    print("Success Rate: {}/{} ({}%)".format(results, simCount, (results/simCount)*100))
 
 done = False
 def animate():
-    for c in itertools.cycle(['.', '..', '...']):
+    for c in itertools.cycle(['.  ', '.. ', '...']):
         if done:
             break
-        sys.stdout.write('\working' + c)
+        sys.stdout.write('\rworking' + c)
         sys.stdout.flush()
         time.sleep(0.1)
+
+prisonerCount = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+
+simCount = int(sys.argv[2]) if len(sys.argv) > 2 else 1000
 
 t = threading.Thread(target=animate)
 t.start()
 
-prisoners(20)
+prisoners(prisonerCount)
 done = True
