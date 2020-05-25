@@ -26,9 +26,9 @@ def prisoners(count):
         drawers.append(i)
     
     with open(path.join(sys.path[0], 'results for {} prisoners.csv'.format(prisonerCount)), 'w') as f:
-        f.write('sim,')
+        f.write('sim,win,')
         f.write(','.join(map(str, drawers)))
-        f.write(',win\n')
+        f.write('\n')
 
         results = 0
         for sim in range(simCount):
@@ -38,8 +38,6 @@ def prisoners(count):
 
             #shuffle drawers
             random.shuffle(drawers)
-            
-            f.write(','.join(map(str, drawers)))
 
             #check all prisoners
             successes = 0
@@ -55,10 +53,11 @@ def prisoners(count):
                         d = drawers[d]
             
             if successes == prisonerCount:
-                f.write(',yes\n')
+                f.write('yes,')
                 results += 1
             else:
-                f.write(',no\n')
+                f.write('no,')
+			f.write(','.join(map(str, drawers)))
     
     global done
     done = True
